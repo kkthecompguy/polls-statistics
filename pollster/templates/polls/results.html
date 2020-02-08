@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+
+  <h2 class="text-center mb-3">{{question.question_text}}</h2>
+
+  <ul class="list-group mb-5">
+    {% for choice in choices %}
+      <li class="list-group-item">
+        {{choice.choice_text}} <span class="badge badge-success float-right">{{choice.votes}}vote{{choice.votes | pluralize}}</span>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div id="myChart"></div>
+
+  <script>
+    const state = {
+      items: [],
+      values: []
+    }
+
+    let question_id = "{{question.id}}"
+
+    fetch(`/polls/${question_id}/result_data/`,{method:'GET', headers:{'content-type': 'application/json'}})
+    .then(res => res.json())
+    .then(data => {
+      for(let i in data){
+
+        let keys = Object.keys(data[i])[0]
+        let values = Object.values(data[i])[0]
+
+        state.items.push(keys)
+        state.values.push(values)
+      }
+
+      buildChart()
+    })
+
+    function buildChart() {
+      let chartData = {
+      "type": "bar",
+      "title": "Statistics",
+      "scale-x": {
+        "values": state.items
+      },
+      "series": [
+        {
+          "values": state.values
+        }
+      ]
+    }
+    zingchart.render({
+      id: "myChart",
+      data: chartData
+    })
+    }
+  </script>
+  <a href="{% url 'polls:index' %}" class="btn btn-secondary btn-sm">Back To Polls</a>
+{% endblock %}

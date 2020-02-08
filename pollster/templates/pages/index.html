@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="jumbotron">
+    <h1 class="display-4 text-center">Welcome To Pollster</h1>
+    <p class="lead text-center">
+      Hello kindly vote based on your opinion. Your vote your secret
+      <a href="{% url 'polls:index' %}" class="btn btn-secondary btn-sm">View Polls</a>
+    </p>
+  </div>
+{% endblock %}
